@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>MDT — Pemilih Mamoxx</title>
+<style>
+  :root{
+    --bg:#071428;
+    --panel:#0c2034;
+    --accent:#0ea5a5;
+    --accent-2:#ffd700;
+    --muted:#9fb3c8;
+    --card:#0b1a28;
+    --danger:#e05252;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background: linear-gradient(180deg,var(--bg) 0%, #021021 100%);
+    color:#e6f2fb;
+    padding:24px;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .wrap{
+    max-width:1100px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns: 1fr 420px;
+    gap:20px;
+    align-items:start;
+  }
+
+  /* LEFT: tables */
+  .left {
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border:1px solid rgba(255,255,255,0.03);
+    padding:18px;
+    border-radius:12px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+  }
+
+  .header {
+    display:flex;
+    gap:12px;
+    align-items:center;
+    margin-bottom:14px;
+  }
+  .brand {
+    background:linear-gradient(90deg,var(--accent-2),#ffc700);
+    color:#071428;
+    font-weight:800;
+    padding:8px 12px;
+    border-radius:8px;
+    box-shadow:0 4px 18px rgba(0,0,0,0.4);
+  }
+  .title {
+    font-size:18px;
+    font-weight:700;
+    color:#dff7ff;
+  }
+  .subtitle { color:var(--muted); font-size:13px; margin-top:2px; }
+
+  .controls {
+    display:flex;
+    gap:8px;
+    margin-bottom:12px;
+    align-items:center;
+  }
+  .search {
+    flex:1;
+    background:#071b2a;
+    border:1px solid rgba(255,255,255,0.03);
+    padding:10px 12px;
+    color:var(--muted);
+    border-radius:10px;
+    outline:none;
+  }
+  .btn {
+    background:var(--accent);
+    color:#062028;
+    padding:10px 12px;
+    border-radius:10px;
+    font-weight:700;
+    border:none;
+    cursor:pointer;
+    box-shadow:0 6px 12px rgba(14,165,165,0.12);
+  }
+  .btn.ghost {
+    background:transparent;
+    color:var(--muted);
+    border:1px solid rgba(255,255,255,0.03);
+  }
+
+  .tables {
+    display:grid;
+    grid-template-columns: 1fr;
+    gap:14px;
+  }
+
+  .panel {
+    background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
+    border-radius:10px;
+    padding:10px;
+    border:1px solid rgba(255,255,255,0.03);
+  }
+
+  .panel-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:8px;
+  }
+  .panel-header h3 { margin:0; font-size:14px; color:#e8fbff; letter-spacing:0.6px;}
+  .panel-header small { color:var(--muted); font-size:12px;}
+
+  table {
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+    color:#dff7ff;
+  }
+  thead th {
+    font-weight:700;
+    text-align:left;
+    padding:8px 10px;
+    font-size:12px;
+    color:#061a28;
+    background:linear-gradient(90deg,var(--accent) 0%, #70e0d0 100%);
+    border-radius:6px;
+  }
+  tbody tr {
+    border-bottom:1px solid rgba(255,255,255,0.03);
+  }
+  td {
+    padding:10px;
+    vertical-align:middle;
+  }
+  .chk { width:36px; text-align:center;}
+  .pasal { font-weight:700; color: #fffde7; width:90px;}
+  .pidana { color:var(--muted); }
+  .meta { font-size:12px; color:var(--muted); }
+
+  /* RIGHT: hasil box */
+  .right {
+    padding:18px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.03);
+    position:sticky;
+    top:24px;
+    height:fit-content;
+  }
+  .result-card {
+    background:linear-gradient(180deg,#061e34, #03151f);
+    border-radius:12px;
+    padding:16px;
+    color:#e8fbff;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+    border:1px solid rgba(14,165,165,0.08);
+  }
+  .result-title {
+    display:flex;
+    gap:8px;
+    align-items:center;
+    margin-bottom:10px;
+  }
+  .badge {
+    background:var(--accent-2);
+    color:#071428;
+    padding:6px 10px;
+    border-radius:8px;
+    font-weight:800;
+  }
+  .result-lines { margin-top:8px; font-size:15px; color:#dff7ff; }
+  .note { margin-top:10px; color:var(--muted); font-size:13px; }
+
+  .small-btn {
+    display:inline-block;
+    padding:8px 10px;
+    border-radius:8px;
+    background:#073743;
+    color:var(--accent-2);
+    font-weight:700;
+    border:1px solid rgba(255,255,255,0.03);
+    cursor:pointer;
+    margin-top:10px;
+  }
+
+  /* responsive */
+  @media (max-width:980px){
+    .wrap { grid-template-columns:1fr; padding-bottom:40px; }
+    .right { position:static; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="left">
+    <div class="header">
+      <div class="brand">P O L I C E</div>
+      <div>
+        <div class="title">MDT — Pasal Moxxe</div>
+        <div class="subtitle">Centang pasal → lihat hasil format akhir</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <input id="globalSearch" class="search" placeholder="Cari pasal atau pidana (ketik lalu Enter)"/>
+      <button class="btn ghost" id="clearSearch">Reset</button>
+      <button class="btn" id="copyResult">Copy</button>
+    </div>
+
+    <div class="tables">
+      <!-- BERAT -->
+      <div class="panel" id="panelBerat">
+        <div class="panel-header">
+          <h3>PIDANA BERAT</h3>
+          <div>
+            <small>Centang untuk memilih</small>
+            <button class="small-btn" onclick="toggleSelect('berat')">Select all</button>
+          </div>
+        </div>
+
+        <table id="tableBerat">
+          <thead>
+            <tr>
+              <th class="chk">✔</th>
+              <th>PASAL</th>
+              <th>PIDANA</th>
+              <th>DENDA</th>
+              <th>MASA</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <!-- SEDANG -->
+      <div class="panel" id="panelSedang">
+        <div class="panel-header">
+          <h3>PIDANA SEDANG</h3>
+          <div>
+            <small>Centang untuk memilih</small>
+            <button class="small-btn" onclick="toggleSelect('sedang')">Select all</button>
+          </div>
+        </div>
+
+        <table id="tableSedang">
+          <thead>
+            <tr>
+              <th class="chk">✔</th>
+              <th>PASAL</th>
+              <th>PIDANA</th>
+              <th>DENDA</th>
+              <th>MASA</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <!-- RINGAN -->
+      <div class="panel" id="panelRingan">
+        <div class="panel-header">
+          <h3>PIDANA RINGAN</h3>
+          <div>
+            <small>Centang untuk memilih</small>
+            <button class="small-btn" onclick="toggleSelect('ringan')">Select all</button>
+          </div>
+        </div>
+
+        <table id="tableRingan">
+          <thead>
+            <tr>
+              <th class="chk">✔</th>
+              <th>PASAL</th>
+              <th>PIDANA</th>
+              <th>DENDA</th>
+              <th>MASA</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="result-card">
+      <div class="result-title">
+        <div class="badge">RESULT</div>
+        <div>
+          <div style="font-weight:800;">Hasil Pemilihan Pasal</div>
+          <div style="font-size:12px;color:var(--muted)">Format siap untuk copy/paste ke ticket atau chat</div>
+        </div>
+      </div>
+
+      <div id="resultText" class="result-lines">
+        Pasal : - <br>
+        Total Denda : - <br>
+        Massa Kurungan : - 
+      </div>
+
+      <div id="noteBox" class="note" style="display:none"></div>
+      <button class="small-btn" id="resetBtn" style="margin-left:0;" onclick="resetAll()">Reset pilihan</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------- Data pasal (sumber: UU KOTA MAYDAY) ---------- */
+const ringan = [
+  { pasal: "1 (A)", pidana: "TIDAK MEMBAWA KTP / TIDAK MEMILIKI KTP", denda: "$5.000", masa: "5 BULAN" },
+  { pasal: "1 (B)", pidana: "MELAKUKAN PENIPUAN TERHADAP WARGA", denda: "$5.000", masa: "5 BULAN" },
+  { pasal: "1 (C)", pidana: "MELAKUKAN PEMALAKAN TERHADAP WARGA", denda: "$5.000", masa: "5 BULAN" },
+  { pasal: "1 (D)", pidana: "MEMBERIKAN INFORMASI PALSU KEPADA KEPOLISIAN", denda: "$5.000", masa: "5 BULAN" },
+  { pasal: "1 (E)", pidana: "PENCEMARAN NAMA BAIK", denda: "$5.000", masa: "10 BULAN" },
+  { pasal: "1 (F)", pidana: "PENCEMARAN NAMA BAIK KEPADA INSTANSI", denda: "$5.000", masa: "10 BULAN" },
+  { pasal: "1 (G)", pidana: "MENYALAHGUNAKAN PANGGILAN HOTLINE", denda: "$5.000", masa: "5 BULAN" },
+  { pasal: "1 (H)", pidana: "MENGHAMBAT PENYELIDIKAN", denda: "$5.000", masa: "5 BULAN" },
+  { pasal: "1 (I)", pidana: "MABUK DI TEMPAT UMUM", denda: "$5.000", masa: "5 BULAN" },
+  { pasal: "1 (J)", pidana: "PERKELAHIAN DI TEMPAT UMUM", denda: "$5.000", masa: "5 BULAN" },
+  { pasal: "1 (K)", pidana: "MENGGANGGU KETERTIBAN UMUM / PROVOKASI", denda: "$5.000", masa: "5 BULAN" },
+  { pasal: "1 (L)", pidana: "TIDAK MELENGKAPI ATRIBUT BERKENDARA", denda: "$5.000", masa: "5 BULAN" },
+  { pasal: "1 (M)", pidana: "MEMAKAI HAL YANG TIDAK SENONOH DI KERAMAIAN", denda: "$5.000", masa: "5 BULAN" },
+  { pasal: "1 (N)", pidana: "MELAKUKAN TINDAKAN YANG TIDAK SENONOH DI KERAMAIAN", denda: "$5.000", masa: "5 BULAN" },
+  { pasal: "1 (O)", pidana: "MELAKUKAN AKSI DEMO TANPA IZIN", denda: "$10.000", masa: "10 BULAN" },
+  { pasal: "1 (P)", pidana: "MELAKUKAN TINDAKAN ANARKIS PADA SAAT AKSI DEMO", denda: "$10.000", masa: "10 BULAN" },
+  { pasal: "1 (Q)", pidana: "MENGHALANGI TUGAS INSTANSI (PENEGAK HUKUM)", denda: "$5.000", masa: "10 BULAN" },
+  { pasal: "1 (R)", pidana: "MENGKONSUMSI NARKOBA DAN NARKOTIKA", denda: "$5.000", masa: "10 BULAN" },
+  { pasal: "1 (S)", pidana: "MENCURI KENDARAAN WARGA", denda: "$5.000", masa: "5 BULAN" }
+];
+
+const sedang = [
+  { pasal: "2 (A)", pidana: "PENGANIAYAAN PEMUKULAN TERHADAP WARGA", denda: "$8.000", masa: "10 BULAN" },
+  { pasal: "2 (B)", pidana: "MELAKUKAN PEMBEGALAN TERHADAP WARGA", denda: "$8.000", masa: "5 BULAN" },
+  { pasal: "2 (C)", pidana: "UPAYA PENYOGOKAN KEPADA PETUGAS", denda: "$10.000", masa: "5 BULAN" },
+  { pasal: "2 (D)", pidana: "BERADA DI ZONA MERAH / ILEGAL", denda: "$8.000", masa: "5 BULAN" },
+  { pasal: "2 (E)", pidana: "MENYALAHGUNAKAN ATRIBUT KEPOLISIAN", denda: "$10.000", masa: "10 BULAN" },
+  { pasal: "2 (F)", pidana: "MELAKUKAN PEMBURUAN ILEGAL (TIDAK MEMILIKI LISENSI)", denda: "$10.000", masa: "10 BULAN" },
+  { pasal: "2 (G)", pidana: "MEMBAWA MINUMAN BERALKOHOL (BEER DAN WHISKEY)", denda: "$8.000", masa: "5 BULAN" },
+  { pasal: "2 (H)", pidana: "MEMBAWA NARKOBA DAN NARKOTIKA (MARIJUANA DAN KANABIS)", denda: "$10.000", masa: "5 BULAN" },
+  { pasal: "2 (I)", pidana: "MEMBAWA BARANG ILEGAL (KEVLAR, LINGGIS DAN KUNCI LETTER T)", denda: "$10.000", masa: "5 BULAN" },
+  { pasal: "2 (J)", pidana: "MEMBAWA HEWAN YANG DILINDUNGI (HIU DAN PENYU)", denda: "$10.000", masa: "5 BULAN" },
+  { pasal: "2 (K)", pidana: "KEPEMILIKAN BARANG ILEGAL (URANIUM ACD DAN URANIUM)", denda: "$10.000", masa: "5 BULAN" },
+  { pasal: "2 (L)", pidana: "MEMBAWA UANG MERAH > $0 - $1.000", denda: "$10.000", masa: "5 BULAN" },
+  { pasal: "2 (M)", pidana: "MEMBAWA UANG MERAH > $1000 - $50.000", denda: "$12.500", masa: "10 BULAN" },
+  { pasal: "2 (N)", pidana: "MEMBAWA UANG MERAH > $50.000 - $1.000.000", denda: "$15.000", masa: "10 BULAN" },
+  { pasal: "2 (O)", pidana: "PENCUCIAN UANG MERAH", denda: "$15.000", masa: "10 BULAN" },
+  { pasal: "2 (P)", pidana: "PENCURIAN KENDARAAN ILEGAL / CAR STEALING", denda: "$12.000", masa: "5 BULAN" },
+  { pasal: "2 (Q)", pidana: "MELAKUKAN PROSES NARKOBA DAN NARKOTIKA", denda: "$12.000", masa: "5 BULAN" },
+  { pasal: "2 (R)", pidana: "MELAKUKAN TINDAKAN KABUR DARI FEDERAL", denda: "$10.000", masa: "15 BULAN" },
+  { pasal: "2 (S)", pidana: "PENGEDARAN BARANG ILEGAL (KEVLAR, MARIJUANA, KANABIS, URANIUM ACD DAN URANIUM)", denda: "$20.000", masa: "10 BULAN" },
+  { pasal: "2 (T)", pidana: "SENGAJA ATAU TIDAK SENGAJA BERADA DI TKP PERPERANGAN", denda: "$10.000", masa: "5 BULAN" },
+  { pasal: "2 (U)", pidana: "UPAYA MELAWAN / MELARIKAN PETUGAS KEPOLISIAN", denda: "$8.000", masa: "15 BULAN" }
+];
+
+const berat = [
+  { pasal: "4 (A)", pidana: "PENGEDARAN SENJATA API ILEGAL", denda: "$15.000", masa: "20 BULAN" },
+  { pasal: "4 (B)", pidana: "KEPEMILIKAN SENJATA TAJAM DAN TUMPUL", denda: "$5.000", masa: "5 BULAN" },
+  { pasal: "4 (C)", pidana: "KEPEMILIKAN SENJATA API ILEGAL (LARAS PENDEK)", denda: "$20.000", masa: "5 BULAN" },
+  { pasal: "4 (D)", pidana: "KEPEMILIKAN SENJATA API ILEGAL (LARAS MENENGAH)", denda: "$20.000", masa: "15 BULAN" },
+  { pasal: "4 (E)", pidana: "KEPEMILIKAN SENJATA API ILEGAL (LARAS PANJANG)", denda: "$30.000", masa: "15 BULAN" },
+  { pasal: "4 (F)", pidana: "MEMPRODUKSI SENJATA API ILEGAL", denda: "$10.000", masa: "20 BULAN" },
+  { pasal: "4 (G)", pidana: "TIDAK MEMILIKI LISENSI SENJATA API RESMI KEPOLISIAN", denda: "$10.000", masa: "10 BULAN" },
+  { pasal: "4 (H)", pidana: "MELAKUKAN PENYANDERAAN KEPADA WARGA", denda: "$15.000", masa: "10 BULAN" },
+  { pasal: "4 (I)", pidana: "MELAKUKAN PENYANDERAAN KEPADA PETUGAS KEPOLISIAN", denda: "$20.000", masa: "10 BULAN" },
+  { pasal: "4 (J)", pidana: "MELAKUKAN PENYANDERAAN KEPADA ANGGOTA INSTANSI", denda: "$20.000", masa: "10 BULAN" },
+  { pasal: "4 (K)", pidana: "UPAYA PEMBUNUHAN KEPADA WARGA MAUPUN PETUGAS", denda: "$15.000", masa: "15 BULAN" },
+  { pasal: "4 (L)", pidana: "PENDONGAN TERHADAP WARGA", denda: "$10.000", masa: "10 BULAN" },
+  { pasal: "4 (M)", pidana: "PENDONGAN TERHADAP PETUGAS KEPOLISIAN", denda: "$10.000", masa: "10 BULAN" },
+  { pasal: "4 (N)", pidana: "MELAKUKAN PENEMBAKAN TERHADAP WARGA", denda: "$10.000", masa: "10 BULAN" },
+  { pasal: "4 (O)", pidana: "MELAKUKAN PENEMBAKAN TERHADAP PETUGAS KEPOLISIAN", denda: "$15.000", masa: "10 BULAN" },
+  { pasal: "4 (P)", pidana: "PERAMPOKAN WARUNG BERSENJATA", denda: "$15.000", masa: "5 BULAN" },
+  { pasal: "4 (Q)", pidana: "PERPERANGAN ANTAR KELOMPOK", denda: "$5.000", masa: "5 BULAN" },
+  { pasal: "4 (R)", pidana: "MENCOBA MENJADI POLISI GADUNGAN", denda: "$20.000", masa: "10 BULAN" },
+  { pasal: "4 (S)", pidana: "UPAYA PENGHILANGAN BARANG BUKTI", denda: "$10.000", masa: "5 BULAN" },
+  { pasal: "4 (T)", pidana: "PERAMPOKAN WARGA MAUPUN PETUGAS / INSTANSI", denda: "$10.000", masa: "10 BULAN" },
+  { pasal: "4 (U)", pidana: "MENCOBA UNTUK MEMBANTU KRIMINALISME", denda: "$15.000", masa: "10 BULAN" },
+  { pasal: "4 (V)", pidana: "MELAKUKAN PERAMPOKAN BANK BESAR", denda: "$30.000", masa: "30 BULAN" },
+  { pasal: "4 (W)", pidana: "MELAKUKAN TINDAKAN KORUPSI INSTANSI", denda: "$50.000", masa: "PERSIDANGAN / HUKUMAN MATI" },
+  { pasal: "4 (X)", pidana: "TERORISME", denda: "$50.000", masa: "HUKUMAN MATI" }
+];
+
+/* ---------- Utility helpers ---------- */
+function normPasalCode(raw){
+  // convert "4 (A)" -> "4A" ; "2 (C)" -> "2C"
+  return raw.replace(/[^0-9A-Za-z]/g,'');
+}
+function parseDendaToNumber(d){
+  if(!d) return NaN;
+  const digits = d.toString().replace(/[^0-9]/g,'');
+  if(digits === '') return NaN;
+  return parseInt(digits,10);
+}
+function containsDeath(masaStr){
+  if(!masaStr) return false;
+  return /HUKUMAN MATI|HUKUMAN MATI|HUKUMAN\s*MATI|PERSIDANGAN|HUKUM\s*MATI/i.test(masaStr);
+}
+function parseMasaToNumber(m){
+  if(!m) return NaN;
+  const digits = m.toString().replace(/[^0-9]/g,'');
+  if(digits==='') return NaN;
+  return parseInt(digits,10);
+}
+
+/* ---------- Render tabel ---------- */
+function createRow(item, kategori, idx){
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td class="chk"><input type="checkbox" data-kategori="${kategori}" data-index="${idx}"></td>
+    <td class="pasal">${item.pasal}</td>
+    <td class="pidana">${item.pidana}</td>
+    <td class="meta">${item.denda}</td>
+    <td class="meta">${item.masa}</td>
+  `;
+  return tr;
+}
+
+function renderAll(){
+  const bbody = document.querySelector('#tableBerat tbody');
+  const sbody = document.querySelector('#tableSedang tbody');
+  const rbody = document.querySelector('#tableRingan tbody');
+  bbody.innerHTML=''; sbody.innerHTML=''; rbody.innerHTML='';
+
+  berat.forEach((it,i)=> bbody.appendChild(createRow(it,'berat',i)));
+  sedang.forEach((it,i)=> sbody.appendChild(createRow(it,'sedang',i)));
+  ringan.forEach((it,i)=> rbody.appendChild(createRow(it,'ringan',i)));
+
+  // attach checkbox listeners
+  document.querySelectorAll('input[type="checkbox"][data-kategori]').forEach(ch => {
+    ch.addEventListener('change', updateResult);
+  });
+}
+renderAll();
+
+/* ---------- Select all per kategori ---------- */
+function toggleSelect(kategori){
+  const rows = document.querySelectorAll(`input[data-kategori="${kategori}"]`);
+  // if any unchecked => check all, else uncheck all
+  const anyUnchecked = [...rows].some(r=>!r.checked);
+  rows.forEach(r=> r.checked = anyUnchecked);
+  updateResult();
+}
+
+/* ---------- Search ---------- */
+const searchInput = document.getElementById('globalSearch');
+searchInput.addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter'){ applySearch(); }
+});
+document.getElementById('clearSearch').addEventListener('click', ()=>{
+  searchInput.value='';
+  applySearch();
+});
+
+function applySearch(){
+  const q = searchInput.value.trim().toLowerCase();
+  const allRows = document.querySelectorAll('tbody tr');
+  allRows.forEach(tr=>{
+    const pasal = tr.querySelector('.pasal').innerText.toLowerCase();
+    const pidana = tr.querySelector('.pidana').innerText.toLowerCase();
+    const denda = tr.querySelector('.meta').innerText.toLowerCase();
+    if(!q){ tr.style.display=''; return; }
+    if(pasal.includes(q) || pidana.includes(q) || denda.includes(q)){
+      tr.style.display='';
+    } else tr.style.display='none';
+  });
+}
+
+/* ---------- Core: hitung & tampilkan hasil ---------- */
+function updateResult(){
+  const checked = Array.from(document.querySelectorAll('input[type="checkbox"][data-kategori]:checked'));
+  if(checked.length === 0){
+    document.getElementById('resultText').innerHTML = `Pasal : - <br>Total Denda : - <br>Massa Kurungan : -`;
+    document.getElementById('noteBox').style.display='none';
+    return;
+  }
+
+  let pasalList = [];
+  let totalDendaNum = 0;
+  let totalMasaNum = 0;
+  let anyNonNumericDenda = false;
+  let anyDeath = false;
+  let anyNonNumericMasa = false;
+
+  checked.forEach(ch=>{
+    const kategori = ch.dataset.kategori;
+    const idx = parseInt(ch.dataset.index,10);
+    let item=null;
+    if(kategori==='berat') item = berat[idx];
+    if(kategori==='sedang') item = sedang[idx];
+    if(kategori==='ringan') item = ringan[idx];
+    if(!item) return;
+
+    pasalList.push(normPasalCode(item.pasal));
+
+    const dnum = parseDendaToNumber(item.denda);
+    if(isNaN(dnum)) anyNonNumericDenda = true;
+    else totalDendaNum += dnum;
+
+    if(containsDeath(item.masa)) anyDeath = true;
+    const mnum = parseMasaToNumber(item.masa);
+    if(isNaN(mnum)){
+      // jika bukan numeric dan bukan death, catat
+      if(!containsDeath(item.masa)) anyNonNumericMasa = true;
+    } else totalMasaNum += mnum;
+  });
+
+  // build display
+  const pasalStr = pasalList.join(', ') || '-';
+  let dendaStr = '-';
+  if(totalDendaNum > 0) dendaStr = `Rp ${totalDendaNum.toLocaleString('id-ID')}`;
+  else dendaStr = (anyNonNumericDenda ? '-' : 'Rp 0');
+
+  // masa logic
+  let masaStr = '-';
+  if(anyDeath) masaStr = 'HUKUMAN MATI';
+  else masaStr = `${totalMasaNum} Bulan`;
+
+  // show
+  document.getElementById('resultText').innerHTML = `
+    Pasal : ${pasalStr} <br>
+    Total Denda : ${dendaStr} <br>
+    Massa Kurungan : ${masaStr}
+  `;
+
+  // note box for edge cases
+  const noteBox = document.getElementById('noteBox');
+  let notes = [];
+  if(anyNonNumericDenda) notes.push('Beberapa pasal memiliki denda tidak terdefinisi (tampil sebagai "-").');
+  if(anyNonNumericMasa && !anyDeath) notes.push('Beberapa pasal memiliki masa hukuman tidak berbentuk angka.');
+  if(notes.length){
+    noteBox.style.display='block';
+    noteBox.innerText = notes.join(' ');
+  } else {
+    noteBox.style.display='none';
+  }
+}
+
+/* ---------- Reset & Copy ---------- */
+function resetAll(){
+  document.querySelectorAll('input[type="checkbox"][data-kategori]').forEach(c=> c.checked=false);
+  updateResult();
+  document.getElementById('globalSearch').value='';
+  applySearch();
+}
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+
+document.getElementById('copyResult').addEventListener('click', ()=>{
+  const text = document.getElementById('resultText').innerText;
+  navigator.clipboard && navigator.clipboard.writeText ? navigator.clipboard.writeText(text).then(()=> {
+    alert('Hasil disalin ke clipboard!');
+  }) : (prompt('Salin manual hasil berikut:', text));
+});
+
+/* initial update to show empty */
+updateResult();
+</script>
+</body>
+</html>vigator.clipboard.writeText(text).then(()=> {
+    alert('Hasil disalin ke clipboard!');
+  }) : (prompt('Salin manual hasil berikut:', text));
+});
+
+/* initial update to show empty */
+updateResult();
+</script>
+</body>
+</html>
